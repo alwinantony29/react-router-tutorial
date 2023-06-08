@@ -1,14 +1,13 @@
 import {  Outlet, useLoaderData,Form,redirect,NavLink,useNavigation, useSubmit } from "react-router-dom";
 import { getContacts,createContact,  } from "../contacts";
-import {deleteContact} from '../contacts'
 import { useEffect } from "react";
-
 
 export async function action(){
   const contact=await createContact()
   return redirect(`/contacts/${contact.id}/edit`)
 }
 export async function loader({request}) {
+  // console.log('root loader call');
   const url=new URL(request.url)
   const q=url.searchParams.get('q')
   const contacts = await getContacts(q);
@@ -26,7 +25,7 @@ export default function Root() {
   return (
     <>
       <div id="sidebar">
-        <h1>React Router Contacts</h1>
+        <h1>My Contacts</h1>
         <div>
           <Form id="search-form" role="search">
             <input
@@ -52,7 +51,7 @@ export default function Root() {
           {contacts.length ? (
             <ul>
               {contacts.map((contact) => (
-                <li>
+                <li>                
                   key={contact.id}
                   <NavLink to={`/contacts/${contact.id}`}
                  className={({ isActive, isPending }) =>
