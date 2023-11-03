@@ -16,7 +16,7 @@ jobs:
         id: extract-task-id
         run: |
           # Extract the ClickUp Task ID from the pull request description
-          PR_BODY="${github.event.pull_request.body }"
+          PR_BODY="${{github.event.pull_request.body}}"
           CLICKUP_URL=$(grep -o -m1 'https://app.clickup.com/t/[A-Za-z0-9]\+' <<< $(echo "$PR_BODY" | sed 's/)/\\)/g'))
           if [[ $CLICKUP_URL =~ /t/([A-Za-z0-9]+) ]]; then
            CU_TASK_ID="${BASH_REMATCH[1]}"
