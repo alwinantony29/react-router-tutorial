@@ -1,0 +1,30 @@
+name: Update ClickUp Task Status
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  update-task-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Extract ClickUp Task ID
+        id: extract-task-id
+        run: |
+          # Extract the ClickUp Task ID from the pull request description
+          PR_BODY="${{ github.event.pull_request.body }}""
+          CLICKUP_URL=$(grep -o -m1 'https://app.clickup.com/t/[A-Za-z0-9]\+' <<< $(echo "$PR_BODY" | sed 's/)/\\)/g'))
+          if [[ $CLICKUP_URL =~ /t/([A-Za-z0-9]+) ]]; then
+           CU_TASK_ID="${BASH_REMATCH[1]}"
+           echo "::set-output name=cu_task_id::$CU_TASK_ID"
+           echo "$CU_TASK_ID"
+          else
+           echo "ClickUp task ID not found in the pull request description."
+           exit 1  # Exit with an error code to stop the workflow
+          fi
+
+      
